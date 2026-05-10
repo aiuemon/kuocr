@@ -1,4 +1,4 @@
-# kulip
+# kuocr
 
 画像文字起こし API のフロントエンド Web アプリケーション。
 
@@ -7,12 +7,12 @@
 ## システム構成
 
 ```
-[ブラウザ] → [kulip (本アプリ)] → [文字起こし API サーバ]
+[ブラウザ] → [kuocr (本アプリ)] → [文字起こし API サーバ]
                  ↓
             [IdP (SAML/OIDC)]
 ```
 
-- **kulip**: フロントエンド Web サーバ（本リポジトリ）
+- **kuocr**: フロントエンド Web サーバ（本リポジトリ）
 - **文字起こし API**: 画像を POST すると Markdown 等で文字起こし結果を返す外部 API（Ollama 互換）
 - **IdP**: 組織の ID プロバイダ（SAML または OIDC 対応）
 
@@ -35,8 +35,8 @@
 ### 1. リポジトリのクローン
 
 ```bash
-git clone https://github.com/aiuemon/kulip.git
-cd kulip
+git clone https://github.com/aiuemon/kuocr.git
+cd kuocr
 ```
 
 ### 2. Ruby のインストール

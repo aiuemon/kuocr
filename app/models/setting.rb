@@ -18,7 +18,7 @@ class Setting < RailsSettings::Base
 
   DEFAULT_TIMEZONE = "Asia/Tokyo".freeze
 
-  DEFAULT_NOTIFICATION_SUBJECT = "[kulip] 文字起こしが完了しました".freeze
+  DEFAULT_NOTIFICATION_SUBJECT = "[kuocr] 文字起こしが完了しました".freeze
   DEFAULT_NOTIFICATION_BODY = <<~BODY.freeze
     {{user_name}} 様
 
@@ -31,7 +31,7 @@ class Setting < RailsSettings::Base
     {{image_url}}
 
     ---
-    このメールは kulip から自動送信されています。
+    このメールは kuocr から自動送信されています。
   BODY
 
   # === 認証設定 ===
@@ -219,7 +219,7 @@ class Setting < RailsSettings::Base
 
     # SAML SP 設定
     def effective_saml_sp_entity_id(fallback = nil)
-      saml_sp_entity_id.presence || fallback || "kulip"
+      saml_sp_entity_id.presence || fallback || "kuocr"
     end
   end
 end

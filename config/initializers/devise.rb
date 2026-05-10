@@ -283,7 +283,7 @@ Devise.setup do |config|
       # モデルを使わず直接SQLで読み込む（初期化時のロード順序問題を回避）
 
       # SP EntityID を settings テーブルから取得
-      sp_entity_id = "kulip"
+      sp_entity_id = "kuocr"
       if connection.table_exists?("settings")
         result = connection.execute("SELECT value FROM settings WHERE var = 'saml_sp_entity_id' LIMIT 1")
         if result.any?
