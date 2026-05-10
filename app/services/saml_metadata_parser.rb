@@ -79,7 +79,7 @@ class SamlMetadataParser
     http.read_timeout = 30
 
     request = Net::HTTP::Get.new(uri)
-    request["User-Agent"] = "kulip/1.0"
+    request["User-Agent"] = "kuocr/1.0"
     request["Accept"] = "application/xml, text/xml"
 
     response = http.request(request)

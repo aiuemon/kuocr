@@ -1,12 +1,12 @@
 services:
   app:
-    image: ghcr.io/aiuemon/kulip:0.1.32
+    image: ghcr.io/aiuemon/kuocr:0.1.32
     ports:
       - "3000:80"
     env_file:
       - .env
     environment:
-      DATABASE_URL: postgres://kulip:kulip@db:5432/kulip_production
+      DATABASE_URL: postgres://kuocr:kuocr@db:5432/kuocr_production
       HTTP_MAX_REQUEST_BODY: "100000000"  # 100MB
       # RAILS_LOG_LEVEL: debug  # デバッグメッセージを表示する場合はコメント解除
       # WEBAUTHN_ORIGIN: https://example.com  # パスキー認証を使用する場合は本番URLを設定
@@ -18,13 +18,13 @@ services:
   db:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: kulip
-      POSTGRES_PASSWORD: kulip
-      POSTGRES_DB: kulip_production
+      POSTGRES_USER: kuocr
+      POSTGRES_PASSWORD: kuocr
+      POSTGRES_DB: kuocr_production
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U kulip -d kulip_production"]
+      test: ["CMD-SHELL", "pg_isready -U kuocr -d kuocr_production"]
       interval: 5s
       timeout: 5s
       retries: 5

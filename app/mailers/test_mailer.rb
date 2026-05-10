@@ -6,7 +6,7 @@ class TestMailer < ApplicationMailer
 
     message = mail(
       to: to,
-      subject: "[kulip] SMTP 設定テストメール",
+      subject: "[kuocr] SMTP 設定テストメール",
       from: smtp_settings[:from_address].presence || Setting.smtp_from_address.presence || "noreply@example.com"
     )
 
