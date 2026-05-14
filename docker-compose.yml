@@ -2,7 +2,7 @@ services:
   app:
     image: ghcr.io/aiuemon/kuocr:0.1.32
     ports:
-      - "3000:80"
+      - "127.0.0.1:3000:80"
     env_file:
       - .env
     environment:
