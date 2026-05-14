@@ -51,6 +51,7 @@ class Setting < RailsSettings::Base
   field :ocr_timeout, type: :integer, default: 300
   field :ocr_model, type: :string, default: ""
   field :ocr_options, type: :hash, default: {}
+  field :ocr_skip_ssl_verify, type: :boolean, default: false
 
   # === クォータ設定 ===
   field :max_storage_per_user_mb, type: :integer, default: 1024

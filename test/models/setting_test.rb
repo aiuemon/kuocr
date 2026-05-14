@@ -22,6 +22,7 @@ class SettingTest < ActiveSupport::TestCase
   test "ocr settings have correct defaults" do
     assert_equal "", Setting.ocr_endpoint
     assert_equal 300, Setting.ocr_timeout
+    assert_equal false, Setting.ocr_skip_ssl_verify
   end
 
   test "ocr_configured? returns false without endpoint and model" do
