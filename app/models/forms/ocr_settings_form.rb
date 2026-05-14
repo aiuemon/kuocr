@@ -8,6 +8,7 @@ module Forms
     attribute :timeout, :integer
     attribute :model, :string
     attribute :options, :string
+    attribute :skip_ssl_verify, :boolean, default: false
 
     validates :timeout, numericality: { greater_than: 0, less_than_or_equal_to: 3600 }, allow_blank: true
     validate :validate_options_json
@@ -25,6 +26,7 @@ module Forms
       Setting.ocr_timeout = timeout.presence || Setting::DEFAULT_OCR_TIMEOUT
       Setting.ocr_model = model.to_s
       Setting.ocr_options = parsed_options
+      Setting.ocr_skip_ssl_verify = skip_ssl_verify
       true
     rescue => e
       errors.add(:base, e.message)
@@ -56,6 +58,7 @@ module Forms
       self.timeout = Setting.ocr_timeout
       self.model = Setting.ocr_model
       self.options = options_for_display
+      self.skip_ssl_verify = Setting.ocr_skip_ssl_verify
     end
 
     def parsed_options

@@ -2,6 +2,7 @@ require "net/http"
 require "uri"
 require "json"
 require "base64"
+require "openssl"
 
 class OcrApiClient
   class Error < StandardError; end
@@ -13,6 +14,7 @@ class OcrApiClient
     @endpoint = Setting.ocr_endpoint
     @api_key = Setting.ocr_api_key
     @timeout = Setting.effective_ocr_timeout
+    @skip_ssl_verify = Setting.ocr_skip_ssl_verify
 
     raise ConfigurationError, "OCR API endpoint is not configured" if @endpoint.blank?
   end
@@ -43,6 +45,7 @@ class OcrApiClient
   def build_http_client(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = uri.scheme == "https"
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if @skip_ssl_verify
     http.open_timeout = @timeout
     http.read_timeout = @timeout
     http

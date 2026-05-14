@@ -148,6 +148,16 @@
           </div>
 
           <div class="mb-3">
+            <div class="form-check">
+              <%= f.check_box :skip_ssl_verify, class: "form-check-input" %>
+              <%= f.label :skip_ssl_verify, "SSL 証明書を検証しない", class: "form-check-label" %>
+            </div>
+            <div class="form-text text-warning">
+              <strong>注意:</strong> 自己署名証明書を使用したサーバに接続する場合のみ有効にしてください。信頼できないサーバへの接続では使用しないでください。
+            </div>
+          </div>
+
+          <div class="mb-3">
             <%= f.label :api_key, "API キー", class: "form-label" %>
             <%= f.text_field :api_key, class: "form-control", placeholder: "（任意）" %>
             <div class="form-text">API 認証が必要な場合に設定（Bearer トークンとして送信）</div>
