@@ -3,6 +3,12 @@ module Forms
     include ActiveModel::Model
     include ActiveModel::Attributes
 
+    PROVIDERS = [
+      [ "Ollama", "ollama" ],
+      [ "OpenAI 互換", "openai_compatible" ]
+    ].freeze
+
+    attribute :provider, :string, default: "ollama"
     attribute :endpoint, :string
     attribute :api_key, :string
     attribute :timeout, :integer
@@ -10,6 +16,7 @@ module Forms
     attribute :options, :string
     attribute :skip_ssl_verify, :boolean, default: false
 
+    validates :provider, inclusion: { in: PROVIDERS.map(&:last) }
     validates :timeout, numericality: { greater_than: 0, less_than_or_equal_to: 3600 }, allow_blank: true
     validate :validate_options_json
 
@@ -21,6 +28,7 @@ module Forms
     def save
       return false unless valid?
 
+      Setting.ocr_provider = provider.to_s
       Setting.ocr_endpoint = endpoint.to_s
       Setting.ocr_api_key = api_key.to_s
       Setting.ocr_timeout = timeout.presence || Setting::DEFAULT_OCR_TIMEOUT
@@ -53,6 +61,7 @@ module Forms
     private
 
     def load_from_settings
+      self.provider = Setting.ocr_provider.presence || "ollama"
       self.endpoint = Setting.ocr_endpoint
       self.api_key = Setting.ocr_api_key
       self.timeout = Setting.ocr_timeout
