@@ -46,6 +46,7 @@ class Setting < RailsSettings::Base
   field :session_timeout_passkey_hours, type: :integer, default: nil
 
   # === OCR設定 ===
+  field :ocr_provider, type: :string, default: "ollama"
   field :ocr_endpoint, type: :string, default: ""
   field :ocr_api_key, type: :string, default: ""
   field :ocr_timeout, type: :integer, default: 300

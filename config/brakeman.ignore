@@ -1,7 +1,7 @@
 {
   "ignored_warnings": [
     {
-      "fingerprint": "41bc74c2a88700f7dabbfcb3c8ac49325c038e8771da666232f7cf9f4fb863dd",
+      "fingerprint": "78b9e3e532821f3f08c4c61d27b90ef907dbcf7715219ca97b777723a822de0b",
       "note": "管理者が明示的に有効化した場合のみ VERIFY_NONE を設定する。自己署名証明書を使用した組織内サーバへの接続を想定した意図的な実装。"
     }
   ]

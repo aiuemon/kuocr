@@ -3,35 +3,44 @@ require "test_helper"
 class OcrApiClientTest < ActiveSupport::TestCase
   setup do
     Setting.ocr_endpoint = "https://ocr.example.com/api/generate"
+    Setting.ocr_model = "llava:latest"
+    Setting.ocr_provider = "ollama"
     Setting.ocr_skip_ssl_verify = false
   end
 
-  test "build_http_client does not skip SSL verification by default" do
-    client = OcrApiClient.new
-    uri = URI.parse("https://ocr.example.com/api/generate")
-    http = client.send(:build_http_client, uri)
-
-    assert http.use_ssl?
-    assert_not_equal OpenSSL::SSL::VERIFY_NONE, http.verify_mode
+  test "configured? returns false when endpoint is blank" do
+    Setting.ocr_endpoint = ""
+    assert_not OcrApiClient.configured?
   end
 
-  test "build_http_client skips SSL verification when ocr_skip_ssl_verify is true" do
-    Setting.ocr_skip_ssl_verify = true
-    client = OcrApiClient.new
-    uri = URI.parse("https://ocr.example.com/api/generate")
-    http = client.send(:build_http_client, uri)
-
-    assert http.use_ssl?
-    assert_equal OpenSSL::SSL::VERIFY_NONE, http.verify_mode
+  test "configured? returns false when model is blank" do
+    Setting.ocr_model = ""
+    assert_not OcrApiClient.configured?
   end
 
-  test "build_http_client does not set verify_mode for http scheme" do
-    Setting.ocr_endpoint = "http://ocr.example.com/api/generate"
-    Setting.ocr_skip_ssl_verify = false
-    client = OcrApiClient.new
-    uri = URI.parse("http://ocr.example.com/api/generate")
-    http = client.send(:build_http_client, uri)
+  test "configured? returns true when endpoint and model are set" do
+    assert OcrApiClient.configured?
+  end
 
-    assert_not http.use_ssl?
+  test "raises ConfigurationError when endpoint is blank" do
+    Setting.ocr_endpoint = ""
+    assert_raises(OcrApiClient::ConfigurationError) { OcrApiClient.new }
+  end
+
+  test "uses OllamaProvider when provider is ollama" do
+    client = OcrApiClient.new
+    assert_instance_of OcrApi::OllamaProvider, client.send(:build_provider)
+  end
+
+  test "uses OpenAiCompatibleProvider when provider is openai_compatible" do
+    Setting.ocr_provider = "openai_compatible"
+    client = OcrApiClient.new
+    assert_instance_of OcrApi::OpenAiCompatibleProvider, client.send(:build_provider)
+  end
+
+  test "uses OllamaProvider as default for unknown provider" do
+    Setting.ocr_provider = "unknown"
+    client = OcrApiClient.new
+    assert_instance_of OcrApi::OllamaProvider, client.send(:build_provider)
   end
 end

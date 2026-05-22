@@ -140,7 +140,17 @@
             </div>
           <% end %>
 
-          <h6 class="text-muted mb-3">API 接続設定</h6>
+          <h6 class="text-muted mb-3">プロバイダ設定</h6>
+          <div class="mb-3">
+            <%= f.label :provider, "プロバイダ", class: "form-label" %>
+            <%= f.select :provider, Forms::OcrSettingsForm::PROVIDERS, {}, class: "form-select", style: "max-width: 250px;" %>
+            <div class="form-text">
+              <strong>Ollama</strong>: Ollama 互換 API（<code>/api/generate</code>）<br>
+              <strong>OpenAI 互換</strong>: OpenAI Chat Completions API（<code>/v1/chat/completions</code>）
+            </div>
+          </div>
+
+          <h6 class="text-muted mt-4 mb-3">API 接続設定</h6>
           <div class="mb-3">
             <%= f.label :endpoint, "API エンドポイント", class: "form-label" %>
             <%= f.text_field :endpoint, class: "form-control", placeholder: "例: http://localhost:11434/api/generate" %>
