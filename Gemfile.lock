@@ -171,7 +171,7 @@ GEM
     jbuilder (2.15.0)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.19.5)
+    json (2.19.9)
     json-jwt (1.17.0)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -283,7 +283,7 @@ GEM
       openssl (> 2.0)
     orm_adapter (0.5.0)
     ostruct (0.6.3)
-    pagy (43.5.4)
+    pagy (43.5.6)
       json
       uri
       yaml
