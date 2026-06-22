@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "tmpdir"
+require "vips"
 
 # HEIC/HEIF 画像を PNG に変換するサービス
 # libvips + libheif を使用
