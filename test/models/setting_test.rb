@@ -95,27 +95,27 @@ class SettingTest < ActiveSupport::TestCase
 
   test "priority_for_affiliations returns 3 when map is empty" do
     Setting.affiliation_priority_map = {}
-    assert_equal 3, Setting.priority_for_affiliations(["faculty"])
+    assert_equal 3, Setting.priority_for_affiliations([ "faculty" ])
   end
 
   test "priority_for_affiliations returns mapped priority" do
     Setting.affiliation_priority_map = { "faculty" => 1, "staff" => 2 }
-    assert_equal 1, Setting.priority_for_affiliations(["faculty"])
-    assert_equal 2, Setting.priority_for_affiliations(["staff"])
+    assert_equal 1, Setting.priority_for_affiliations([ "faculty" ])
+    assert_equal 2, Setting.priority_for_affiliations([ "staff" ])
   end
 
   test "priority_for_affiliations returns minimum priority for multiple affiliations" do
     Setting.affiliation_priority_map = { "faculty" => 1, "member" => 3 }
-    assert_equal 1, Setting.priority_for_affiliations(["member", "faculty"])
+    assert_equal 1, Setting.priority_for_affiliations([ "member", "faculty" ])
   end
 
   test "priority_for_affiliations returns 3 when no affiliation matches map" do
     Setting.affiliation_priority_map = { "faculty" => 1 }
-    assert_equal 3, Setting.priority_for_affiliations(["unknown"])
+    assert_equal 3, Setting.priority_for_affiliations([ "unknown" ])
   end
 
   test "priority_for_affiliations ignores out-of-range values in map" do
     Setting.affiliation_priority_map = { "bad" => 0, "faculty" => 2 }
-    assert_equal 2, Setting.priority_for_affiliations(["bad", "faculty"])
+    assert_equal 2, Setting.priority_for_affiliations([ "bad", "faculty" ])
   end
 end

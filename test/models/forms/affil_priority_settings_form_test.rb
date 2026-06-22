@@ -37,7 +37,7 @@ module Forms
 
     test "save strips whitespace from affiliation" do
       form = AffilPrioritySettingsForm.new(
-        mappings: [{ affiliation: "  faculty  ", priority: "1" }]
+        mappings: [ { affiliation: "  faculty  ", priority: "1" } ]
       )
       assert form.save
       assert Setting.affiliation_priority_map.key?("faculty")
@@ -45,7 +45,7 @@ module Forms
 
     test "invalid when priority out of range" do
       form = AffilPrioritySettingsForm.new(
-        mappings: [{ affiliation: "faculty", priority: "6" }]
+        mappings: [ { affiliation: "faculty", priority: "6" } ]
       )
       assert_not form.valid?
       assert form.errors[:mappings].present?

@@ -17,8 +17,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.string "name", null: false
     t.bigint "record_id", null: false
     t.string "record_type", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+    t.index [ "blob_id" ], name: "index_active_storage_attachments_on_blob_id"
+    t.index [ "record_type", "record_id", "name", "blob_id" ], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
@@ -30,13 +30,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.string "key", null: false
     t.text "metadata"
     t.string "service_name", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+    t.index [ "key" ], name: "index_active_storage_blobs_on_key", unique: true
   end
 
   create_table "active_storage_variant_records", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+    t.index [ "blob_id", "variation_digest" ], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "auth_settings", force: :cascade do |t|
@@ -56,9 +56,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.boolean "show_on_login", default: true, null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
-    t.index ["enabled"], name: "index_identity_providers_on_enabled"
-    t.index ["provider_type"], name: "index_identity_providers_on_provider_type"
-    t.index ["slug"], name: "index_identity_providers_on_slug", unique: true
+    t.index [ "enabled" ], name: "index_identity_providers_on_enabled"
+    t.index [ "provider_type" ], name: "index_identity_providers_on_provider_type"
+    t.index [ "slug" ], name: "index_identity_providers_on_slug", unique: true
   end
 
   create_table "image_groups", force: :cascade do |t|
@@ -66,7 +66,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.string "memo"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["user_id"], name: "index_image_groups_on_user_id"
+    t.index [ "user_id" ], name: "index_image_groups_on_user_id"
   end
 
   create_table "images", force: :cascade do |t|
@@ -82,11 +82,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.string "status", default: "pending", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["image_group_id"], name: "index_images_on_image_group_id"
-    t.index ["ocr_prompt_pattern_id"], name: "index_images_on_ocr_prompt_pattern_id"
-    t.index ["purged_at"], name: "index_images_on_purged_at"
-    t.index ["status"], name: "index_images_on_status"
-    t.index ["user_id"], name: "index_images_on_user_id"
+    t.index [ "image_group_id" ], name: "index_images_on_image_group_id"
+    t.index [ "ocr_prompt_pattern_id" ], name: "index_images_on_ocr_prompt_pattern_id"
+    t.index [ "purged_at" ], name: "index_images_on_purged_at"
+    t.index [ "status" ], name: "index_images_on_status"
+    t.index [ "user_id" ], name: "index_images_on_user_id"
   end
 
   create_table "ocr_prompt_patterns", force: :cascade do |t|
@@ -96,8 +96,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.integer "position", default: 0
     t.text "prompt", null: false
     t.datetime "updated_at", null: false
-    t.index ["is_default"], name: "index_ocr_prompt_patterns_on_is_default"
-    t.index ["position"], name: "index_ocr_prompt_patterns_on_position"
+    t.index [ "is_default" ], name: "index_ocr_prompt_patterns_on_is_default"
+    t.index [ "position" ], name: "index_ocr_prompt_patterns_on_position"
   end
 
   create_table "ocr_settings", force: :cascade do |t|
@@ -122,7 +122,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.datetime "updated_at", null: false
     t.text "value"
     t.string "var", null: false
-    t.index ["var"], name: "index_settings_on_var", unique: true
+    t.index [ "var" ], name: "index_settings_on_var", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -139,9 +139,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.datetime "sessions_invalidated_at"
     t.datetime "updated_at", null: false
     t.string "webauthn_id"
-    t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
+    t.index [ "email" ], name: "index_users_on_email", unique: true
+    t.index [ "reset_password_token" ], name: "index_users_on_reset_password_token", unique: true
+    t.index [ "webauthn_id" ], name: "index_users_on_webauthn_id", unique: true
     t.check_constraint "priority BETWEEN 1 AND 5", name: "chk_users_priority_range"
   end
 
@@ -155,8 +155,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
     t.bigint "sign_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["external_id"], name: "index_webauthn_credentials_on_external_id", unique: true
-    t.index ["user_id"], name: "index_webauthn_credentials_on_user_id"
+    t.index [ "external_id" ], name: "index_webauthn_credentials_on_external_id", unique: true
+    t.index [ "user_id" ], name: "index_webauthn_credentials_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

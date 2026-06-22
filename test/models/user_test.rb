@@ -78,7 +78,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OpenStruct.new(
       provider: "saml_test",
       info: OpenStruct.new(email: "saml_new@example.com"),
-      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => [ "faculty" ] })
     )
 
     user = User.from_omniauth(auth)
@@ -90,7 +90,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OpenStruct.new(
       provider: "saml_test",
       info: OpenStruct.new(email: "saml_multi@example.com"),
-      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["member", "faculty"] })
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => [ "member", "faculty" ] })
     )
 
     user = User.from_omniauth(auth)
@@ -102,7 +102,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OpenStruct.new(
       provider: "saml_test",
       info: OpenStruct.new(email: "saml_unknown@example.com"),
-      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["unknown_role"] })
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => [ "unknown_role" ] })
     )
 
     user = User.from_omniauth(auth)
@@ -126,7 +126,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OpenStruct.new(
       provider: "oidc_test",
       info: OpenStruct.new(email: "oidc_new@example.com"),
-      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => [ "faculty" ] })
     )
 
     user = User.from_omniauth(auth)
@@ -140,7 +140,7 @@ class UserTest < ActiveSupport::TestCase
     auth = OpenStruct.new(
       provider: "saml_test",
       info: OpenStruct.new(email: existing_user.email),
-      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => [ "faculty" ] })
     )
 
     User.from_omniauth(auth)
