@@ -12,11 +12,24 @@ class User < ApplicationRecord
 
   before_create :generate_webauthn_id
 
+  PRIORITIES = (1..5).freeze
+  validates :priority, inclusion: { in: PRIORITIES }
+
   def self.from_omniauth(auth)
     # メールアドレスで既存ユーザーを検索、なければ作成
     where(email: auth.info.email).first_or_create do |user|
       user.password = Devise.friendly_token[0, 20]
+      if auth.provider.to_s.start_with?("saml_")
+        user.priority = Setting.priority_for_affiliations(extract_saml_affiliations(auth))
+      end
     end
+  end
+
+  private_class_method def self.extract_saml_affiliations(auth)
+    raw = auth.extra&.raw_info
+    return [] unless raw
+
+    Array(raw["eduPersonAffiliation"]).map(&:to_s).reject(&:empty?)
   end
 
   def passkey_registered?

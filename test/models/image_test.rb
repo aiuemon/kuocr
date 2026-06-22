@@ -1,6 +1,7 @@
 require "test_helper"
 
 class ImageTest < ActiveSupport::TestCase
+  include ActiveJob::TestHelper
   test "valid statuses" do
     assert_equal %w[pending queued processing completed failed], Image::STATUSES
   end
@@ -245,5 +246,19 @@ class ImageTest < ActiveSupport::TestCase
     image.ocr_prompt_text = nil
     OcrPromptPattern.delete_all
     assert_nil image.effective_ocr_prompt
+  end
+
+  test "enqueue_ocr_processing uses queue matching user priority" do
+    Setting.ocr_endpoint = "http://example.com/api"
+    Setting.ocr_model = "llava:latest"
+
+    user = users(:user)
+    user.update!(priority: 2)
+    image = images(:pending_image)
+    image.update_column(:user_id, user.id)
+
+    assert_enqueued_with(job: OcrProcessJob, queue: "priority_2") do
+      image.send(:enqueue_ocr_processing)
+    end
   end
 end

@@ -45,12 +45,14 @@ Rails.application.routes.draw do
       patch :update_notification, on: :member
       patch :update_smtp, on: :member
       patch :update_timezone, on: :member
+      patch :update_affil_priority, on: :member
       post :send_test_email, on: :member
     end
     resources :users, only: %i[index] do
       member do
         patch :toggle_admin
         patch :invalidate_sessions
+        patch :update_priority
       end
     end
     resources :images, only: %i[index destroy]

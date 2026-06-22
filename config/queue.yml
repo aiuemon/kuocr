@@ -3,7 +3,8 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
-    - queues: "*"
+    - queues: [priority_1, priority_2, priority_3, priority_4, priority_5, default]
+      ordered_queues: true
       threads: 3
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 0.1

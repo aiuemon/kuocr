@@ -89,6 +89,6 @@ class Image < ApplicationRecord
   def enqueue_ocr_processing
     return unless OcrApiClient.configured?
 
-    OcrProcessJob.perform_later(id)
+    OcrProcessJob.set(queue: "priority_#{user.priority}").perform_later(id)
   end
 end

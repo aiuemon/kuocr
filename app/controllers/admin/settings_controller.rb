@@ -69,6 +69,13 @@ module Admin
         anchor: "collapseTimezone",
         param_key: :timezone_settings,
         permitted: %i[timezone]
+      },
+      affil_priority: {
+        form_class: Forms::AffilPrioritySettingsForm,
+        message: "所属属性・優先度マッピングを更新しました。",
+        anchor: "collapseAffilPriority",
+        param_key: :affil_priority_settings,
+        permitted: { mappings: %i[affiliation priority] }
       }
     }.freeze
 

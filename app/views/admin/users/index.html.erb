@@ -13,6 +13,7 @@
         <th>累計処理時間</th>
         <th>最終利用日時</th>
         <th>管理者</th>
+        <th><%= sort_link("優先度", :priority, @sort, @dir) %></th>
         <th>操作</th>
       </tr>
     </thead>
@@ -33,6 +34,12 @@
             <% end %>
           </td>
           <td>
+            <span class="badge bg-secondary"><%= user.priority %></span>
+            <% if user.priority_manually_set? %>
+              <span class="badge bg-warning text-dark ms-1">手動</span>
+            <% end %>
+          </td>
+          <td>
             <% if user != current_user %>
               <%= link_to(user.admin? ? "権限解除" : "権限付与",
                           toggle_admin_admin_user_path(user),
@@ -48,6 +55,16 @@
                             turbo_method: :patch,
                             turbo_confirm: "#{user.email} のセッションを無効化しますか？\nこのユーザは次回アクセス時に再ログインが必要になります。"
                           } %>
+              <form action="<%= update_priority_admin_user_path(user) %>" method="post" class="d-inline-flex align-items-center gap-1 ms-1">
+                <%= hidden_field_tag :_method, :patch %>
+                <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <select name="priority" class="form-select form-select-sm" style="width: auto" aria-label="優先度">
+                  <% User::PRIORITIES.each do |p| %>
+                    <option value="<%= p %>" <%= "selected" if user.priority == p %>>優先度 <%= p %></option>
+                  <% end %>
+                </select>
+                <button type="submit" class="btn btn-sm btn-outline-secondary">変更</button>
+              </form>
             <% else %>
               <span class="badge bg-secondary">自分</span>
             <% end %>

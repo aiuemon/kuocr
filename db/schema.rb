@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_17_092736) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_21_041338) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -131,6 +131,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_092736) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name"
+    t.integer "priority", default: 3, null: false
+    t.boolean "priority_manually_set", default: false, null: false
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
@@ -140,6 +142,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_092736) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
+    t.check_constraint "priority BETWEEN 1 AND 5", name: "chk_users_priority_range"
   end
 
   create_table "webauthn_credentials", force: :cascade do |t|
