@@ -97,5 +97,45 @@ module Admin
       patch invalidate_sessions_admin_user_path(@admin)
       assert_redirected_to root_path
     end
+
+    test "update_priority changes user priority and sets priority_manually_set" do
+      sign_in @admin
+      assert_equal 3, @user.priority
+      assert_not @user.priority_manually_set?
+
+      patch update_priority_admin_user_path(@user), params: { priority: 1 }
+      assert_redirected_to admin_users_path
+      assert_match /優先度を 1 に変更しました/, flash[:notice]
+
+      @user.reload
+      assert_equal 1, @user.priority
+      assert @user.priority_manually_set?
+    end
+
+    test "update_priority rejects invalid priority" do
+      sign_in @admin
+      patch update_priority_admin_user_path(@user), params: { priority: 6 }
+      assert_redirected_to admin_users_path
+      assert_match /失敗しました/, flash[:alert]
+    end
+
+    test "update_priority cannot change own priority" do
+      sign_in @admin
+      original_priority = @admin.priority
+
+      patch update_priority_admin_user_path(@admin), params: { priority: 1 }
+      assert_redirected_to admin_users_path
+      assert_equal "自分自身の優先度は変更できません。", flash[:alert]
+
+      @admin.reload
+      assert_equal original_priority, @admin.priority
+    end
+
+    test "update_priority requires admin role" do
+      sign_in @user
+
+      patch update_priority_admin_user_path(@admin), params: { priority: 1 }
+      assert_redirected_to root_path
+    end
   end
 end

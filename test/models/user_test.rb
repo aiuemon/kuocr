@@ -49,6 +49,105 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
+  test "priority defaults to 3" do
+    user = users(:user)
+    assert_equal 3, user.priority
+  end
+
+  test "priority_manually_set defaults to false" do
+    user = users(:user)
+    assert_not user.priority_manually_set?
+  end
+
+  test "priority must be between 1 and 5" do
+    user = users(:user)
+    user.priority = 0
+    assert_not user.valid?
+
+    user.priority = 6
+    assert_not user.valid?
+
+    (1..5).each do |p|
+      user.priority = p
+      assert user.valid?, "priority #{p} should be valid"
+    end
+  end
+
+  test "from_omniauth sets priority from SAML affiliations" do
+    Setting.affiliation_priority_map = { "faculty" => 1, "staff" => 2 }
+    auth = OpenStruct.new(
+      provider: "saml_test",
+      info: OpenStruct.new(email: "saml_new@example.com"),
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+    )
+
+    user = User.from_omniauth(auth)
+    assert_equal 1, user.priority
+  end
+
+  test "from_omniauth picks highest priority (minimum value) when multiple affiliations match" do
+    Setting.affiliation_priority_map = { "faculty" => 1, "member" => 3 }
+    auth = OpenStruct.new(
+      provider: "saml_test",
+      info: OpenStruct.new(email: "saml_multi@example.com"),
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["member", "faculty"] })
+    )
+
+    user = User.from_omniauth(auth)
+    assert_equal 1, user.priority
+  end
+
+  test "from_omniauth defaults to priority 3 when affiliation not in map" do
+    Setting.affiliation_priority_map = { "faculty" => 1 }
+    auth = OpenStruct.new(
+      provider: "saml_test",
+      info: OpenStruct.new(email: "saml_unknown@example.com"),
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["unknown_role"] })
+    )
+
+    user = User.from_omniauth(auth)
+    assert_equal 3, user.priority
+  end
+
+  test "from_omniauth defaults to priority 3 when eduPersonAffiliation is blank" do
+    Setting.affiliation_priority_map = { "faculty" => 1 }
+    auth = OpenStruct.new(
+      provider: "saml_test",
+      info: OpenStruct.new(email: "saml_noaffil@example.com"),
+      extra: OpenStruct.new(raw_info: {})
+    )
+
+    user = User.from_omniauth(auth)
+    assert_equal 3, user.priority
+  end
+
+  test "from_omniauth does not set priority from OIDC (defaults to 3)" do
+    Setting.affiliation_priority_map = { "faculty" => 1 }
+    auth = OpenStruct.new(
+      provider: "oidc_test",
+      info: OpenStruct.new(email: "oidc_new@example.com"),
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+    )
+
+    user = User.from_omniauth(auth)
+    assert_equal 3, user.priority
+  end
+
+  test "from_omniauth does not update priority for existing users" do
+    existing_user = users(:user)
+    existing_user.update!(priority: 2)
+    Setting.affiliation_priority_map = { "faculty" => 1 }
+    auth = OpenStruct.new(
+      provider: "saml_test",
+      info: OpenStruct.new(email: existing_user.email),
+      extra: OpenStruct.new(raw_info: { "eduPersonAffiliation" => ["faculty"] })
+    )
+
+    User.from_omniauth(auth)
+    existing_user.reload
+    assert_equal 2, existing_user.priority
+  end
+
   test "storage_usage_bytes returns total size of uploaded images" do
     user = users(:user)
     assert_respond_to user, :storage_usage_bytes

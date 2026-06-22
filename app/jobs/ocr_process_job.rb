@@ -1,5 +1,5 @@
 class OcrProcessJob < ApplicationJob
-  queue_as :default
+  queue_as :priority_3
 
   retry_on OcrApiClient::TimeoutError, wait: 30.seconds, attempts: 3
   retry_on OcrApiClient::RequestError, wait: 1.minute, attempts: 2

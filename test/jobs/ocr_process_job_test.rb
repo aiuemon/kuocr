@@ -28,8 +28,8 @@ class OcrProcessJobTest < ActiveJob::TestCase
     assert_equal "pending", image.status
   end
 
-  test "job is enqueued to default queue" do
-    assert_equal "default", OcrProcessJob.new.queue_name
+  test "job default queue is priority_3" do
+    assert_equal "priority_3", OcrProcessJob.new.queue_name
   end
 
   test "job class exists and inherits from ApplicationJob" do

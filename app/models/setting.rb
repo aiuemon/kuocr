@@ -86,6 +86,9 @@ class Setting < RailsSettings::Base
   # === SAML SP 設定 ===
   field :saml_sp_entity_id, type: :string, default: ""
 
+  # === 優先度設定 ===
+  field :affiliation_priority_map, type: :hash, default: {}
+
   # === 互換性メソッド ===
   class << self
     # 認証設定
@@ -222,6 +225,17 @@ class Setting < RailsSettings::Base
     # SAML SP 設定
     def effective_saml_sp_entity_id(fallback = nil)
       saml_sp_entity_id.presence || fallback || "kuocr"
+    end
+
+    # 優先度設定
+    def priority_for_affiliations(affiliations)
+      return 3 if affiliations.blank?
+
+      map = affiliation_priority_map
+      return 3 if map.blank?
+
+      priorities = Array(affiliations).filter_map { |a| map[a.to_s]&.to_i }
+      priorities.select { |p| (1..5).include?(p) }.min || 3
     end
   end
 end

@@ -532,4 +532,61 @@
       </div>
     </div>
   </div>
+
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAffilPriority" aria-expanded="false" aria-controls="collapseAffilPriority">
+        所属属性・優先度マッピング
+      </button>
+    </h2>
+    <div id="collapseAffilPriority" class="accordion-collapse collapse" data-bs-parent="#settingsAccordion">
+      <div class="accordion-body">
+        <div id="flash_affil_priority"></div>
+        <p class="text-muted">
+          SAML ログイン時に IdP から送られる <code>eduPersonAffiliation</code> 属性の値に応じて、ユーザの優先度（1〜5、小さいほど高優先）を自動設定します。<br>
+          複数の値がある場合は最高優先度（最小値）が採用されます。マッピングに存在しない値・属性が空の場合は優先度 3 が設定されます。
+        </p>
+
+        <%= form_with model: @affil_priority_form, url: update_affil_priority_admin_settings_path, method: :patch,
+                      data: { controller: "affil-priority" } do |f| %>
+          <% if @affil_priority_form.errors.any? %>
+            <div class="alert alert-danger">
+              <ul class="mb-0">
+                <% @affil_priority_form.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <div data-affil-priority-target="mappings">
+            <% Array(@affil_priority_form.mappings).each_with_index do |mapping, i| %>
+              <div class="d-flex gap-2 mb-2 align-items-center" data-affil-priority-target="row">
+                <input type="text" name="affil_priority_settings[mappings][<%= i %>][affiliation]"
+                       value="<%= mapping[:affiliation] %>"
+                       class="form-control" style="max-width: 240px;"
+                       placeholder="例: faculty">
+                <select name="affil_priority_settings[mappings][<%= i %>][priority]" class="form-select" style="width: auto">
+                  <% (1..5).each do |p| %>
+                    <option value="<%= p %>" <%= "selected" if mapping[:priority].to_i == p %>>優先度 <%= p %></option>
+                  <% end %>
+                </select>
+                <button type="button" class="btn btn-outline-danger btn-sm"
+                        data-action="affil-priority#removeRow">削除</button>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="mb-3">
+            <button type="button" class="btn btn-outline-secondary btn-sm"
+                    data-action="affil-priority#addRow">+ 行を追加</button>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <%= f.submit "保存", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
