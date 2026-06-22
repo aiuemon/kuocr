@@ -3,7 +3,14 @@ module Forms
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    attr_accessor :mappings
+    def mappings=(value)
+      rows = value.is_a?(Hash) ? value.values : Array(value)
+      @mappings = rows.map { |m| m.to_h.with_indifferent_access }
+    end
+
+    def mappings
+      @mappings || []
+    end
 
     def initialize(attributes = {})
       super
@@ -12,7 +19,7 @@ module Forms
     end
 
     validates_each :mappings do |record, attr, value|
-      Array(value).each do |m|
+      value.each do |m|
         next if m[:affiliation].blank?
 
         unless (1..5).include?(m[:priority].to_i)
@@ -24,7 +31,7 @@ module Forms
     def save
       return false unless valid?
 
-      map = Array(mappings)
+      map = mappings
         .reject { |m| m[:affiliation].blank? }
         .to_h { |m| [ m[:affiliation].strip, m[:priority].to_i ] }
       Setting.affiliation_priority_map = map

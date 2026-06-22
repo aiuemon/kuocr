@@ -57,5 +57,17 @@ module Forms
       assert form.save
       assert_equal({}, Setting.affiliation_priority_map)
     end
+
+    test "save works when mappings is a hash with numeric string keys (from params)" do
+      form = AffilPrioritySettingsForm.new(
+        mappings: {
+          "0" => { "affiliation" => "faculty", "priority" => "2" },
+          "1" => { "affiliation" => "staff", "priority" => "2" },
+          "2" => { "affiliation" => "student", "priority" => "4" }
+        }
+      )
+      assert form.save
+      assert_equal({ "faculty" => 2, "staff" => 2, "student" => 4 }, Setting.affiliation_priority_map)
+    end
   end
 end
