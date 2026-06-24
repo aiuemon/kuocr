@@ -63,7 +63,7 @@
 
   <div class="col-md-6 mb-4">
     <div class="card">
-      <div class="card-header">プレビュー</div>
+      <div class="card-header">サムネイル</div>
       <div class="card-body text-center">
         <% if @image.purged? %>
           <div class="text-muted py-5">
@@ -73,10 +73,10 @@
             </svg>
             <p>ファイルは削除されました</p>
           </div>
-        <% elsif @image.file.attached? && @image.file.content_type.start_with?("image/") %>
-          <%= image_tag @image.file, class: "img-fluid", style: "max-height: 400px;" %>
+        <% elsif @image.file.representable? %>
+          <%= image_tag @image.file.representation(resize_to_limit: [100, 100]), class: "img-fluid" %>
         <% else %>
-          <span class="text-muted">プレビューなし</span>
+          <span class="text-muted">サムネイルなし</span>
         <% end %>
       </div>
     </div>

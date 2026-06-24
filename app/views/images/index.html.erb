@@ -29,8 +29,8 @@
       <% @images.each do |image| %>
         <tr>
           <td>
-            <% if image.file.attached? && image.file.content_type.start_with?("image/") %>
-              <%= image_tag image.file.variant(resize_to_limit: [100, 100]) %>
+            <% if image.file.representable? %>
+              <%= image_tag image.file.representation(resize_to_limit: [100, 100]) %>
             <% else %>
               -
             <% end %>
