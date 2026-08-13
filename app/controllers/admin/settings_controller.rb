@@ -26,7 +26,7 @@ module Admin
         message: "OCR設定を更新しました。",
         anchor: "collapseOcr",
         param_key: :ocr_settings,
-        permitted: %i[endpoint api_key timeout model prompt options skip_ssl_verify]
+        permitted: %i[provider endpoint api_key timeout model prompt options skip_ssl_verify]
       },
       quota: {
         form_class: Forms::QuotaSettingsForm,
