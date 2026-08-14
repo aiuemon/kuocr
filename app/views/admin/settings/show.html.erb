@@ -431,6 +431,15 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <%= f.label :dpi, "PDF 変換品質", class: "form-label" %>
+            <%= f.select :dpi, Forms::PdfSettingsForm::DPI_OPTIONS, {}, class: "form-select", style: "max-width: 280px;" %>
+            <div class="form-text">
+              OCR 前に PDF を画像へ変換する解像度を設定します。低いほど高速ですが、小さい文字の精度が落ちる場合があります。<br>
+              現在の設定: <strong><%= Setting.effective_pdf_dpi %> dpi</strong>
+            </div>
+          </div>
+
           <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <%= f.submit "保存", class: "btn btn-primary" %>
           </div>

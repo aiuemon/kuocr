@@ -303,27 +303,30 @@ module Admin
     end
 
     # PDF settings tests
-    test "update_pdf changes max pages" do
+    test "update_pdf changes max pages and dpi" do
       sign_in @admin
 
       patch update_pdf_admin_settings_path, params: {
-        pdf_settings: { max_pages: 50 }
+        pdf_settings: { max_pages: 50, dpi: 150 }
       }
 
       assert_redirected_to admin_settings_path(anchor: "collapseUserFiles")
       assert_equal 50, Setting.pdf_max_pages
+      assert_equal 150, Setting.pdf_dpi
     end
 
     test "update_pdf uses default when blank" do
       sign_in @admin
       Setting.pdf_max_pages = 50
+      Setting.pdf_dpi = 200
 
       patch update_pdf_admin_settings_path, params: {
-        pdf_settings: { max_pages: "" }
+        pdf_settings: { max_pages: "", dpi: "" }
       }
 
       assert_redirected_to admin_settings_path(anchor: "collapseUserFiles")
       assert_equal Setting::DEFAULT_PDF_MAX_PAGES, Setting.pdf_max_pages
+      assert_equal Setting::DEFAULT_PDF_DPI, Setting.pdf_dpi
     end
 
     test "update_pdf validates max pages range" do
@@ -341,6 +344,16 @@ module Admin
 
       patch update_pdf_admin_settings_path, params: {
         pdf_settings: { max_pages: 101 }
+      }
+
+      assert_response :unprocessable_entity
+    end
+
+    test "update_pdf validates dpi option" do
+      sign_in @admin
+
+      patch update_pdf_admin_settings_path, params: {
+        pdf_settings: { max_pages: 20, dpi: 72 }
       }
 
       assert_response :unprocessable_entity

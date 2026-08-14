@@ -4,13 +4,12 @@ require "open3"
 require "tmpdir"
 
 # PDF ファイルを画像に変換するサービス
-# poppler-utils の pdftoppm を使用して各ページを PNG に変換する
+# poppler-utils の pdftoppm を使用して各ページを JPEG に変換する
 class PdfProcessingService
   class Error < StandardError; end
   class PageLimitExceededError < Error; end
   class ConversionError < Error; end
 
-  DPI = 200
   IMAGE_FORMAT = "jpeg"  # pdftoppm のオプション名
   FILE_EXTENSION = "jpg" # 出力ファイルの拡張子
 
@@ -18,6 +17,7 @@ class PdfProcessingService
     @pdf_data = pdf_data
     @filename = filename
     @max_pages = Setting.effective_pdf_max_pages
+    @dpi = Setting.effective_pdf_dpi
   end
 
   # PDF のページ数を取得
@@ -73,11 +73,11 @@ class PdfProcessingService
   end
 
   def convert_pdf_to_images(pdf_path, output_prefix)
-    # pdftoppm -jpeg -r 200 input.pdf output_prefix
+    # pdftoppm -jpeg -r <dpi> input.pdf output_prefix
     _stdout, stderr, status = Open3.capture3(
       "pdftoppm",
       "-#{IMAGE_FORMAT}",
-      "-r", DPI.to_s,
+      "-r", @dpi.to_s,
       pdf_path,
       output_prefix
     )
