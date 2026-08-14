@@ -41,6 +41,25 @@ class OcrCompletionMailerTest < ActionMailer::TestCase
     assert_equal Setting::DEFAULT_NOTIFICATION_SUBJECT, email.subject
   end
 
+  test "completion_notification applies configured smtp settings" do
+    Setting.smtp_enabled = true
+    Setting.smtp_address = "smtp.example.com"
+    Setting.smtp_port = 587
+    Setting.smtp_authentication = "plain"
+    Setting.smtp_user_name = "user@example.com"
+    Setting.smtp_password = "secret"
+    Setting.smtp_enable_starttls = true
+
+    email = OcrCompletionMailer.completion_notification(@image)
+
+    assert_equal "smtp.example.com", email.delivery_method.settings[:address]
+    assert_equal 587, email.delivery_method.settings[:port]
+    assert_equal :plain, email.delivery_method.settings[:authentication]
+    assert_equal "user@example.com", email.delivery_method.settings[:user_name]
+    assert_equal "secret", email.delivery_method.settings[:password]
+    assert_equal true, email.delivery_method.settings[:enable_starttls_auto]
+  end
+
   test "completion_notification does not send when user has no email" do
     @image.user.email = nil
 

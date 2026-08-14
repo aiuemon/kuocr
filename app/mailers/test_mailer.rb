@@ -1,5 +1,5 @@
 class TestMailer < ApplicationMailer
-  skip_before_action :configure_smtp_settings
+  skip_after_action :configure_smtp_settings
 
   def test_email(to:, smtp_settings: {})
     @sent_at = Time.current
