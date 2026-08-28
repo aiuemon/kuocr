@@ -64,14 +64,18 @@ module Admin
     end
 
     # OCR settings tests
-    test "update_ocr changes endpoint" do
+    test "update_ocr changes provider and endpoint" do
       sign_in @admin
 
       patch update_ocr_admin_settings_path, params: {
-        ocr_settings: { endpoint: "http://new.example.com/api" }
+        ocr_settings: {
+          provider: "openai_compatible",
+          endpoint: "http://new.example.com/api"
+        }
       }
 
       assert_redirected_to admin_settings_path(anchor: "collapseOcr")
+      assert_equal "openai_compatible", Setting.ocr_provider
       assert_equal "http://new.example.com/api", Setting.ocr_endpoint
     end
 
