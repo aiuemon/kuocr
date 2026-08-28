@@ -47,7 +47,7 @@ module Admin
         message: "PDF設定を更新しました。",
         anchor: "collapseUserFiles",
         param_key: :pdf_settings,
-        permitted: %i[max_pages]
+        permitted: %i[max_pages dpi]
       },
       notification: {
         form_class: Forms::NotificationSettingsForm,

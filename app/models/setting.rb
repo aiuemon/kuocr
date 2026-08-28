@@ -15,6 +15,8 @@ class Setting < RailsSettings::Base
   DEFAULT_MAX_STORAGE_MB = 1024
   DEFAULT_AUTO_PURGE_DAYS = 7
   DEFAULT_PDF_MAX_PAGES = 20
+  DEFAULT_PDF_DPI = 120
+  PDF_DPI_OPTIONS = [ 96, 120, 150, 200 ].freeze
 
   DEFAULT_TIMEZONE = "Asia/Tokyo".freeze
 
@@ -63,6 +65,7 @@ class Setting < RailsSettings::Base
 
   # === PDF設定 ===
   field :pdf_max_pages, type: :integer, default: 20
+  field :pdf_dpi, type: :integer, default: DEFAULT_PDF_DPI
 
   # === メール通知設定 ===
   field :notification_email_enabled, type: :boolean, default: false
@@ -170,6 +173,11 @@ class Setting < RailsSettings::Base
     def effective_pdf_max_pages
       pages = pdf_max_pages
       pages.present? && pages > 0 ? pages : DEFAULT_PDF_MAX_PAGES
+    end
+
+    def effective_pdf_dpi
+      dpi = pdf_dpi.to_i
+      PDF_DPI_OPTIONS.include?(dpi) ? dpi : DEFAULT_PDF_DPI
     end
 
     # メール通知設定

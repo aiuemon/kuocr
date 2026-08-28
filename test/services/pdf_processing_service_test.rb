@@ -5,6 +5,7 @@ require "test_helper"
 class PdfProcessingServiceTest < ActiveSupport::TestCase
   setup do
     Rails.cache.clear
+    Setting.pdf_dpi = Setting::DEFAULT_PDF_DPI
     @poppler_available = system("which pdfinfo > /dev/null 2>&1")
   end
 
@@ -47,6 +48,28 @@ class PdfProcessingServiceTest < ActiveSupport::TestCase
     assert_equal "document_2.jpg", result[1][:filename]
   end
 
+  test "convert_pdf_to_images は設定された DPI を pdftoppm に渡す" do
+    Setting.pdf_dpi = 96
+    service = PdfProcessingService.new("pdf data", "test.pdf")
+    status = Object.new
+    status.define_singleton_method(:success?) { true }
+    captured_args = nil
+    original_capture3 = Open3.method(:capture3)
+
+    Open3.define_singleton_method(:capture3) do |*args|
+      captured_args = args
+      [ "", "", status ]
+    end
+
+    begin
+      service.send(:convert_pdf_to_images, "input.pdf", "page")
+    ensure
+      Open3.define_singleton_method(:capture3, original_capture3)
+    end
+
+    assert_equal [ "pdftoppm", "-jpeg", "-r", "96", "input.pdf", "page" ], captured_args
+  end
+
   test "convert_to_images はページ上限を超えた場合 PageLimitExceededError を発生させる" do
     skip "poppler-utils がインストールされていません" unless @poppler_available
 
@@ -72,17 +95,19 @@ class PdfProcessingServiceTest < ActiveSupport::TestCase
 
   # Forms::PdfSettingsForm のテスト（poppler 不要）
   test "PdfSettingsForm は有効な値を保存できる" do
-    form = Forms::PdfSettingsForm.new(max_pages: 50)
+    form = Forms::PdfSettingsForm.new(max_pages: 50, dpi: 150)
     assert form.valid?
     assert form.save
     assert_equal 50, Setting.pdf_max_pages
+    assert_equal 150, Setting.pdf_dpi
   end
 
   test "PdfSettingsForm は空の場合デフォルト値を使用する" do
-    form = Forms::PdfSettingsForm.new(max_pages: "")
+    form = Forms::PdfSettingsForm.new(max_pages: "", dpi: "")
     assert form.valid?
     assert form.save
     assert_equal Setting::DEFAULT_PDF_MAX_PAGES, Setting.pdf_max_pages
+    assert_equal Setting::DEFAULT_PDF_DPI, Setting.pdf_dpi
   end
 
   test "PdfSettingsForm は 0 以下の値を拒否する" do
@@ -97,10 +122,18 @@ class PdfProcessingServiceTest < ActiveSupport::TestCase
     assert form.errors[:max_pages].present?
   end
 
+  test "PdfSettingsForm は選択肢外の DPI を拒否する" do
+    form = Forms::PdfSettingsForm.new(max_pages: 20, dpi: 72)
+    assert_not form.valid?
+    assert form.errors[:dpi].present?
+  end
+
   test "PdfSettingsForm は設定から値を読み込む" do
     Setting.pdf_max_pages = 30
+    Setting.pdf_dpi = 96
     form = Forms::PdfSettingsForm.new
     assert_equal 30, form.max_pages
+    assert_equal 96, form.dpi
   end
 
   private

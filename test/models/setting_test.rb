@@ -51,6 +51,21 @@ class SettingTest < ActiveSupport::TestCase
     assert_equal 1024, Setting.max_storage_per_user_mb
   end
 
+  test "pdf settings have correct defaults" do
+    assert_equal 20, Setting.pdf_max_pages
+    assert_equal 120, Setting.effective_pdf_dpi
+  end
+
+  test "effective_pdf_dpi returns configured option" do
+    Setting.pdf_dpi = 96
+    assert_equal 96, Setting.effective_pdf_dpi
+  end
+
+  test "effective_pdf_dpi returns default for unsupported value" do
+    Setting.pdf_dpi = 72
+    assert_equal Setting::DEFAULT_PDF_DPI, Setting.effective_pdf_dpi
+  end
+
   test "max_storage_bytes converts mb to bytes" do
     Setting.max_storage_per_user_mb = 100
     assert_equal 100.megabytes, Setting.max_storage_bytes
