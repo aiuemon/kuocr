@@ -78,6 +78,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
+      - name: Install libvips
+        run: sudo apt-get update -qq && sudo apt-get install --no-install-recommends -y libvips libheif1 libheif-plugin-libde265
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -102,6 +105,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+
+      - name: Install libvips
+        run: sudo apt-get update -qq && sudo apt-get install --no-install-recommends -y libvips libheif1 libheif-plugin-libde265
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
