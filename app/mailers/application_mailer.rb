@@ -3,7 +3,7 @@ class ApplicationMailer < ActionMailer::Base
 
   default from: -> { Setting.smtp_from_address.presence || "noreply@example.com" }
 
-  before_action :configure_smtp_settings
+  after_action :configure_smtp_settings
 
   private
 
