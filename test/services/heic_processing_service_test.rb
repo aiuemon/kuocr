@@ -52,8 +52,6 @@ class HeicProcessingServiceTest < ActiveSupport::TestCase
     skip "libvips に HEIF サポートがありません" unless @vips_heif_available
 
     heic_data = create_sample_heic
-    skip "実際の HEIC フィクスチャがありません（Issue #190）" if heic_data.blank?
-
     service = HeicProcessingService.new(heic_data, "photo.heic")
 
     result = service.convert_to_png
@@ -92,8 +90,6 @@ class HeicProcessingServiceTest < ActiveSupport::TestCase
   end
 
   def create_sample_heic
-    # 実際の HEIC ファイルが必要な場合はフィクスチャを使用
-    # ここではテスト用のダミーを返す（実際のテストはスキップされる）
-    ""
+    File.binread(Rails.root.join("test/fixtures/files/test_sample.heic"))
   end
 end
