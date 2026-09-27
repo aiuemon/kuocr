@@ -50,9 +50,10 @@ Rails.application.configure do
   # Solid Cache を使用する場合は別途マイグレーションが必要
   config.cache_store = :memory_store
 
-  # インプロセスキューを使用（シンプルなデプロイのため）
-  # Solid Queue を使用する場合は別途マイグレーションが必要
-  config.active_job.queue_adapter = :async
+  # Replace the default in-process and non-durable queuing backend for Active Job.
+  # primary DB を共用するため config.solid_queue.connects_to は設定しない
+  # （参考: https://github.com/rails/solid_queue#single-database-configuration）
+  config.active_job.queue_adapter = :solid_queue
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
