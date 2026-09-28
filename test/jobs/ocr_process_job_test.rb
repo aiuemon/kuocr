@@ -35,4 +35,19 @@ class OcrProcessJobTest < ActiveJob::TestCase
   test "job class exists and inherits from ApplicationJob" do
     assert OcrProcessJob < ApplicationJob
   end
+
+  test "concurrency_limit reflects the current setting" do
+    Setting.ocr_job_concurrency = 5
+    assert_equal 5, OcrProcessJob.concurrency_limit
+
+    Setting.ocr_job_concurrency = 2
+    assert_equal 2, OcrProcessJob.concurrency_limit
+  end
+
+  test "concurrency_duration covers the worst-case job runtime" do
+    Setting.ocr_timeout = 300
+    Setting.pdf_max_pages = 20
+
+    assert_equal 300 * 20 + 5.minutes, OcrProcessJob.concurrency_duration
+  end
 end

@@ -15,9 +15,13 @@ module Forms
     attribute :model, :string
     attribute :options, :string
     attribute :skip_ssl_verify, :boolean, default: false
+    attribute :job_concurrency, :integer
 
     validates :provider, inclusion: { in: PROVIDERS.map(&:last) }
     validates :timeout, numericality: { greater_than: 0, less_than_or_equal_to: 3600 }, allow_blank: true
+    validates :job_concurrency,
+      numericality: { greater_than: 0, less_than_or_equal_to: Setting::MAX_OCR_JOB_CONCURRENCY },
+      allow_blank: true
     validate :validate_options_json
 
     def initialize(attributes = {})
@@ -35,6 +39,7 @@ module Forms
       Setting.ocr_model = model.to_s
       Setting.ocr_options = parsed_options
       Setting.ocr_skip_ssl_verify = skip_ssl_verify
+      Setting.ocr_job_concurrency = job_concurrency.presence || Setting::DEFAULT_OCR_JOB_CONCURRENCY
       true
     rescue => e
       errors.add(:base, e.message)
@@ -68,6 +73,7 @@ module Forms
       self.model = Setting.ocr_model
       self.options = options_for_display
       self.skip_ssl_verify = Setting.ocr_skip_ssl_verify
+      self.job_concurrency = Setting.ocr_job_concurrency
     end
 
     def parsed_options

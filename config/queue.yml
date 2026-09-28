@@ -3,9 +3,11 @@ default: &default
     - polling_interval: 1
       batch_size: 500
   workers:
+    # threads は管理画面の「OCRジョブの同時実行数」上限より大きくすること
+    # （実際の同時実行数は OcrProcessJob の limits_concurrency で絞る）
     - queues: [priority_1, priority_2, priority_3, priority_4, priority_5, default]
       ordered_queues: true
-      threads: 3
+      threads: 10
       processes: <%= ENV.fetch("JOB_CONCURRENCY", 1) %>
       polling_interval: 0.1
 

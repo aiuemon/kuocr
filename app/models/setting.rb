@@ -17,6 +17,8 @@ class Setting < RailsSettings::Base
   DEFAULT_PDF_MAX_PAGES = 20
   DEFAULT_PDF_DPI = 120
   PDF_DPI_OPTIONS = [ 96, 120, 150, 200 ].freeze
+  DEFAULT_OCR_JOB_CONCURRENCY = 3
+  MAX_OCR_JOB_CONCURRENCY = 10
 
   DEFAULT_TIMEZONE = "Asia/Tokyo".freeze
 
@@ -55,6 +57,7 @@ class Setting < RailsSettings::Base
   field :ocr_model, type: :string, default: ""
   field :ocr_options, type: :hash, default: {}
   field :ocr_skip_ssl_verify, type: :boolean, default: false
+  field :ocr_job_concurrency, type: :integer, default: 3
 
   # === クォータ設定 ===
   field :max_storage_per_user_mb, type: :integer, default: 1024
@@ -147,6 +150,13 @@ class Setting < RailsSettings::Base
 
     def effective_ocr_options
       ocr_options.present? ? ocr_options : DEFAULT_OCR_OPTIONS
+    end
+
+    def effective_ocr_job_concurrency
+      concurrency = ocr_job_concurrency
+      return DEFAULT_OCR_JOB_CONCURRENCY unless concurrency.present? && concurrency > 0
+
+      [ concurrency, MAX_OCR_JOB_CONCURRENCY ].min
     end
 
     # クォータ設定
