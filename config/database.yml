@@ -21,8 +21,9 @@ test:
   database: storage/test.sqlite3
 
 # Production uses PostgreSQL
-# Solid Cache/Queue/Cable の gem が database 設定を要求するため、
-# すべて primary と同じ DATABASE_URL を使用する
+# Solid Cache/Cable の gem が database 設定を要求するため、
+# primary と同じ DATABASE_URL を使用する
+# Solid Queue は primary DB を共用するため接続設定は不要
 production:
   primary: &production_primary
     adapter: postgresql
@@ -30,8 +31,6 @@ production:
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV["DATABASE_URL"] %>
   cache:
-    <<: *production_primary
-  queue:
     <<: *production_primary
   cable:
     <<: *production_primary
