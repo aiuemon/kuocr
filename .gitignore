@@ -83,3 +83,6 @@ Thumbs.db
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+# Claude
+/.claude
+
