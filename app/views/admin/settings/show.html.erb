@@ -179,6 +179,12 @@
             <div class="form-text">API リクエストのタイムアウト時間（デフォルト: <%= Setting::DEFAULT_OCR_TIMEOUT %> 秒）</div>
           </div>
 
+          <div class="mb-3">
+            <%= f.label :job_concurrency, "OCRジョブの同時実行数", class: "form-label" %>
+            <%= f.number_field :job_concurrency, class: "form-control", min: 1, max: Setting::MAX_OCR_JOB_CONCURRENCY, placeholder: Setting::DEFAULT_OCR_JOB_CONCURRENCY, style: "max-width: 200px;" %>
+            <div class="form-text">同時に処理する OCR ジョブの上限数（1〜<%= Setting::MAX_OCR_JOB_CONCURRENCY %>、デフォルト: <%= Setting::DEFAULT_OCR_JOB_CONCURRENCY %>）</div>
+          </div>
+
           <h6 class="text-muted mt-4 mb-3">モデル設定</h6>
           <div class="mb-3">
             <%= f.label :model, "モデル名", class: "form-label" %>

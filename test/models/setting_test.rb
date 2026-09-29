@@ -47,6 +47,21 @@ class SettingTest < ActiveSupport::TestCase
     assert_equal Setting::DEFAULT_OCR_OPTIONS, Setting.effective_ocr_options
   end
 
+  test "effective_ocr_job_concurrency returns default when not set" do
+    Setting.ocr_job_concurrency = 0
+    assert_equal Setting::DEFAULT_OCR_JOB_CONCURRENCY, Setting.effective_ocr_job_concurrency
+  end
+
+  test "effective_ocr_job_concurrency returns configured value" do
+    Setting.ocr_job_concurrency = 5
+    assert_equal 5, Setting.effective_ocr_job_concurrency
+  end
+
+  test "effective_ocr_job_concurrency caps at the maximum" do
+    Setting.ocr_job_concurrency = 999
+    assert_equal Setting::MAX_OCR_JOB_CONCURRENCY, Setting.effective_ocr_job_concurrency
+  end
+
   test "quota settings have correct default" do
     assert_equal 1024, Setting.max_storage_per_user_mb
   end

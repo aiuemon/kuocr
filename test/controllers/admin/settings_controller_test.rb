@@ -89,6 +89,27 @@ module Admin
       assert_response :unprocessable_entity
     end
 
+    test "update_ocr changes job concurrency" do
+      sign_in @admin
+
+      patch update_ocr_admin_settings_path, params: {
+        ocr_settings: { job_concurrency: 5 }
+      }
+
+      assert_redirected_to admin_settings_path(anchor: "collapseOcr")
+      assert_equal 5, Setting.ocr_job_concurrency
+    end
+
+    test "update_ocr rejects job concurrency above the maximum" do
+      sign_in @admin
+
+      patch update_ocr_admin_settings_path, params: {
+        ocr_settings: { job_concurrency: Setting::MAX_OCR_JOB_CONCURRENCY + 1 }
+      }
+
+      assert_response :unprocessable_entity
+    end
+
     # Quota settings tests
     test "update_quota changes max storage" do
       sign_in @admin
